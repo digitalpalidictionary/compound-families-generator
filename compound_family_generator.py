@@ -16,8 +16,8 @@ logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S')
 convert = input (f"convert csv to excel (y/n)? ")
 if convert == "y":
     logging.warning(f"converting csv to excel sheet")
-    csv_file = "/home/bhikkhu/Bodhirasa/Dropbox/Pāli English Dictionary/Pāli English Dictionary-full.csv"
-    xlsx_file = "/home/bhikkhu/Bodhirasa/Dropbox/Pāli English Dictionary/Pāli English Dictionary-full.xlsx"
+    csv_file = "/home/bhikkhu/Bodhirasa/Dropbox/dpd/dpd-full.csv"
+    xlsx_file = "/home/bhikkhu/Bodhirasa/Dropbox/dpd/dpd-full.xlsx"
     workbook = Workbook(xlsx_file)
     worksheet = workbook.add_worksheet()
     csv_reader = csv.reader(open(csv_file,'rt'),delimiter="\t")
@@ -32,7 +32,7 @@ if convert == "n":
 # open excel sheet
 logging.warning(f"loading excel sheet")
 
-wb = xl.load_workbook("Pāli English Dictionary-full.xlsx")
+wb = xl.load_workbook("dpd-full.xlsx")
 sheet = wb["Sheet1"]
 last_row = sheet.max_row + 1
 row_number = 2
