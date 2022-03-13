@@ -4,22 +4,39 @@
 import re
 import pandas as pd
 import warnings
+from datetime import datetime
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.simplefilter(action='ignore', category=UserWarning)
 
+def timeis():
+	global blue
+	global yellow
+	global green
+	global red
+	global white
+
+	blue = "\033[38;5;33m" #blue
+	green = "\033[38;5;34m" #green
+	red= "\033[38;5;160m" #red
+	yellow = "\033[38;5;220m" #yellow
+	white = "\033[38;5;251m" #white
+	now = datetime.now()
+	current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+	return (f"{blue}{current_time}{white}")
+
+print(f"{timeis()} {yellow}compound families generator") 
+print(f"{timeis()} ----------------------------------------")
+
 def setup_dpd_df():
-	
+	print(f"{timeis()} {green}setting up dpd dataframe")
 	global dpd_df
 	dpd_df = pd.read_csv ("../csvs/dpd-full.csv", sep="\t", dtype=str)
 	dpd_df = dpd_df.fillna("") 
 
 def extract_compound_family_names():
-
+	print(f"{timeis()} {green}extracting compound family names")
 	global compound_family_df
-
-	print("~"*40)
-	print("extracting compound family names")
 
 	test1 = dpd_df["Family2"] != ""
 	test2 = dpd_df["Meaning IN CONTEXT"] != ""
@@ -46,10 +63,7 @@ def extract_compound_family_names():
 	compound_family_df.reset_index(drop=True, inplace=True)
 
 def generate_compound_families_html():
-
-	print("~"*40)
-	print("generating compound family lists")
-	print("~"*40)
+	print(f"{timeis()} {green}generating compound family lists")
 
 	dpd_df['Pāli3'] = dpd_df['Pāli1'].str.replace(" \d*", "")
 
@@ -71,7 +85,7 @@ def generate_compound_families_html():
 		df_filtered = df_reduced.loc[filter, ["Pāli1", "POS", "Meaning IN CONTEXT"]]
 
 		if row % 500 == 0:
-			print(f"{row}/{compound_family_count}\t{compound_family}")
+			print(f"{timeis()} {row}/{compound_family_count}\t{compound_family}")
 
 		if df_filtered.shape[0] > 0:
 			html = ""
@@ -94,3 +108,5 @@ def generate_compound_families_html():
 setup_dpd_df()
 extract_compound_family_names()
 generate_compound_families_html()
+
+print(f"{timeis()} ----------------------------------------")
