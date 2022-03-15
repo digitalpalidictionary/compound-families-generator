@@ -55,6 +55,10 @@ def extract_compound_family_names():
 	with open ("compound_family_list.csv", "w") as write_list:
 		for item in compound_family_list:
 			write_list.write(item + "\n")
+	
+	if "+" in compound_family_list:
+		compound_family_list.remove("+")
+		print(f"{timeis()} {red}please remove +'s from family2")
 
 	# import compound_family_list as dataframe
 	compound_family_df = pd.DataFrame(compound_family_list)
@@ -78,9 +82,10 @@ def generate_compound_families_html():
 
 	for row in range (compound_family_count):
 		compound_family =  compound_family_df.iloc[row,0]
+		compound_family_no_number = re.sub(r"\d", "", compound_family)
 		
 		test1 = df_reduced["Family2"].str.contains(rf"(^|\s){compound_family}(\s|$)")
-		test2 = df_reduced["Pāli3"] != compound_family
+		test2 = df_reduced["Pāli3"] != compound_family_no_number
 		filter = test1 & test2
 		df_filtered = df_reduced.loc[filter, ["Pāli1", "POS", "Meaning IN CONTEXT"]]
 
