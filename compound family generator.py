@@ -7,6 +7,7 @@ import warnings
 from datetime import date
 from datetime import datetime
 import os
+from timeis import timeis, yellow, red, blue, white, green, line
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.simplefilter(action='ignore', category=UserWarning)
@@ -14,24 +15,8 @@ warnings.simplefilter(action='ignore', category=UserWarning)
 today = date.today()
 date = today.strftime("%d")
 
-def timeis():
-	global blue
-	global yellow
-	global green
-	global red
-	global white
-
-	blue = "\033[38;5;33m" #blue
-	green = "\033[38;5;34m" #green
-	red= "\033[38;5;160m" #red
-	yellow = "\033[38;5;220m" #yellow
-	white = "\033[38;5;251m" #white
-	now = datetime.now()
-	current_time = now.strftime("%Y-%m-%d %H:%M:%S")
-	return (f"{blue}{current_time}{white}")
-
 print(f"{timeis()} {yellow}compound families generator") 
-print(f"{timeis()} ----------------------------------------")
+print(f"{timeis()} {line}")
 
 def setup_dpd_df():
 	print(f"{timeis()} {green}setting up dpd dataframe")
@@ -151,4 +136,4 @@ extract_compound_family_names()
 generate_compound_families_html()
 delete_unused_family_files()
 
-print(f"{timeis()} ----------------------------------------")
+print(f"{timeis()} {line}")
