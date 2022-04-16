@@ -58,8 +58,9 @@ def extract_compound_family_names():
 	global master_family_list
 	master_family_list = compound_family_df[0].tolist()
 
+
 def generate_compound_families_html():
-	print(f"{timeis()} {green}generating compound family lists")
+	print(f"{timeis()} {green}generating compound family html")
 
 	dpd_df['Pāli3'] = dpd_df['Pāli1'].str.replace(" \d*", "")
 
@@ -90,7 +91,7 @@ def generate_compound_families_html():
 		if df_filtered.shape[0] > 0:
 			html = ""
 			length = df_filtered.shape[0]
-			html += f"""<tbody>"""
+			html += f"""<table class = "table1"><tbody>"""
 			anki_html += f"<b>{compound_family}</b>\t"
 			anki_html += f"<table><tbody>"
 
@@ -107,7 +108,7 @@ def generate_compound_families_html():
 				
 				anki_html += f"<tr valign='top'><div style='color: #FFB380'><td>{cf_pali}</td><td><div style='color: #FF6600'>{cf_pos}</div></td><td><div style='color: #FFB380'>{cf_english}</td><td><div style='color: #FF6600'>{cf_constr}</div></td></tr>"
 
-			html += f"</tbody>"
+			html += f"</tbody></table>"
 			anki_html += f"</tbody></table>"
 			anki_html += f"\t{date}\n"
 
