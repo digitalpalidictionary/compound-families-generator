@@ -31,8 +31,7 @@ def extract_compound_family_names():
 	test1 = dpd_df["Family2"] != ""
 	test2 = dpd_df["Meaning IN CONTEXT"] != ""
 	# test3 = dpd_df["Pāli Root"] == ""
-	test4 = dpd_df["Metadata"] == ""
-	filter = test1 & test2 & test4
+	filter = test1 & test2 # & test3
 	compound_family_df = dpd_df.loc[filter, ["Family2"]]
 
 	#make compound family list
@@ -67,8 +66,7 @@ def generate_compound_families_html():
 	test1 = dpd_df["Family2"] != ""
 	test2 = dpd_df["Meaning IN CONTEXT"] != ""
 	# test3 = dpd_df["Pāli Root"] == ""
-	test4 = dpd_df["Metadata"] != "yes"
-	filter = test1 & test2 & test4
+	filter = test1 & test2 # & test3
 	df_reduced = dpd_df[filter]
 
 	compound_family_count = compound_family_df.shape[0]
