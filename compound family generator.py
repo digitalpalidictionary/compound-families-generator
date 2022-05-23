@@ -89,7 +89,6 @@ def generate_compound_families_html():
 		if df_filtered.shape[0] > 0:
 			html = ""
 			length = df_filtered.shape[0]
-			html += f"""<table class = "table1"><tbody>"""
 			anki_html += f"<b>{compound_family}</b>\t"
 			anki_html += f"<table><tbody>"
 
@@ -100,13 +99,10 @@ def generate_compound_families_html():
 				cf_constr = df_filtered.iloc[row, 3]
 				cf_constr = re.sub (r"<br/>.+", "", cf_constr)
 			
-				html += f"<tr><th>{cf_pali}</th>"
-				html += f"<td>{cf_pos}</td>"
-				html += f"<td>{cf_english}</td></tr>"
-				
+				html += f"""<b>{cf_pali}</b>&ensp;<span class = "colour2">{cf_pos}</span>&ensp;{cf_english}<br>"""
 				anki_html += f"<tr valign='top'><div style='color: #FFB380'><td>{cf_pali}</td><td><div style='color: #FF6600'>{cf_pos}</div></td><td><div style='color: #FFB380'>{cf_english}</td><td><div style='color: #FF6600'>{cf_constr}</div></td></tr>"
 
-			html += f"</tbody></table>"
+			html += f"</p>"
 			anki_html += f"</tbody></table>"
 			anki_html += f"\t{date}\n"
 
