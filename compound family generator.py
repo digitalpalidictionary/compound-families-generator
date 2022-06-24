@@ -7,7 +7,7 @@ import warnings
 from datetime import date
 from datetime import datetime
 import os
-from timeis import timeis, yellow, red, blue, white, green, line
+from timeis import timeis, yellow, red, blue, white, green, line, tic, toc
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.simplefilter(action='ignore', category=UserWarning)
@@ -99,7 +99,7 @@ def generate_compound_families_html():
 				cf_constr = df_filtered.iloc[row, 3]
 				cf_constr = re.sub (r"<br/>.+", "", cf_constr)
 			
-				html += f"""<b>{cf_pali}</b>&ensp;<span class = "colour2">{cf_pos}</span>&ensp;{cf_english}<br>"""
+				html += f"""<b>{cf_pali}</b>&ensp;<b>{cf_pos}</b>&ensp;{cf_english}<br>"""
 				anki_html += f"<tr valign='top'><div style='color: #FFB380'><td>{cf_pali}</td><td><div style='color: #FF6600'>{cf_pos}</div></td><td><div style='color: #FFB380'>{cf_english}</td><td><div style='color: #FF6600'>{cf_constr}</div></td></tr>"
 
 			html += f"</p>"
@@ -126,9 +126,9 @@ def delete_unused_family_files():
 			except:
 				print(f"{timeis()} {red}{file} not found")
 
+tic()
 setup_dpd_df()
 extract_compound_family_names()
 generate_compound_families_html()
 delete_unused_family_files()
-
-print(f"{timeis()} {line}")
+toc()
