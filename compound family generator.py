@@ -85,9 +85,14 @@ def generate_compound_families_html():
 		if row % 500 == 0:
 			print(f"{timeis()} {row}/{compound_family_count}\t{compound_family}")
 
+		with open ("../exporter/assets/dpd-words.css", "r") as c:
+			css = c.read()
+
 		if df_filtered.shape[0] > 0:
 			html = ""
+			# html += f"<style>{css}</style>"
 			length = df_filtered.shape[0]
+			html += f"""<table class = "table1"><tbody>"""
 			anki_html += f"<b>{compound_family}</b>\t"
 			anki_html += f"<table><tbody>"
 
@@ -98,10 +103,16 @@ def generate_compound_families_html():
 				cf_constr = df_filtered.iloc[row, 3]
 				cf_constr = re.sub (r"<br/>.+", "", cf_constr)
 			
-				html += f"""<b>{cf_pali}</b>&ensp;<b2>{cf_pos}</b2>&ensp;{cf_english}<br>"""
+				html += f"<tr><th class='cfpali'>{cf_pali}</th>"
+				html += f"<td class='cfpos'>{cf_pos}</td>"
+				html += f"<td class='cfeng'>{cf_english}</td></tr>"
+				
+				# html += f"<tr><th>{cf_pali} <b class='pos'> {cf_pos}</b></tr>"
+				# html += f"<tr><td>{cf_english}</td></tr>"
+
 				anki_html += f"<tr valign='top'><div style='color: #FFB380'><td>{cf_pali}</td><td><div style='color: #FF6600'>{cf_pos}</div></td><td><div style='color: #FFB380'>{cf_english}</td><td><div style='color: #FF6600'>{cf_constr}</div></td></tr>"
 
-			html += f"</p>"
+			html += f"</tbody></table>"
 			anki_html += f"</tbody></table>"
 			anki_html += f"\t{date}\n"
 
