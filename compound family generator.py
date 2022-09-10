@@ -8,6 +8,7 @@ from datetime import date
 from datetime import datetime
 import os
 from timeis import timeis, yellow, red, blue, white, green, line, tic, toc
+from delete_unused_files import del_unused_files
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.simplefilter(action='ignore', category=UserWarning)
@@ -107,9 +108,6 @@ def generate_compound_families_html():
 				html += f"<td class='cfpos'>{cf_pos}</td>"
 				html += f"<td class='cfeng'>{cf_english}</td></tr>"
 				
-				# html += f"<tr><th>{cf_pali} <b class='pos'> {cf_pos}</b></tr>"
-				# html += f"<tr><td>{cf_english}</td></tr>"
-
 				anki_html += f"<tr valign='top'><div style='color: #FFB380'><td>{cf_pali}</td><td><div style='color: #FF6600'>{cf_pos}</div></td><td><div style='color: #FFB380'>{cf_english}</td><td><div style='color: #FF6600'>{cf_constr}</div></td></tr>"
 
 			html += f"</tbody></table>"
@@ -124,17 +122,11 @@ def generate_compound_families_html():
 	
 
 def delete_unused_family_files():
-	print(f"{timeis()} {green}deleting unused family files")
-	
-	for root, dirs, files in os.walk("output/", topdown=True):
-		for file in files:
-			try:
-				file_clean = re.sub(".html", "", file)
-				if file_clean not in master_family_list:
-					os.remove(f"output/{file_clean}.html")
-					print(f"{timeis()} {file}")
-			except:
-				print(f"{timeis()} {red}{file} not found")
+
+	file_dir = "output/"
+	file_ext = ".html"
+	del_unused_files(master_family_list, file_dir, file_ext)
+
 
 tic()
 setup_dpd_df()
