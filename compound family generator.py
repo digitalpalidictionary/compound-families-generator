@@ -7,6 +7,8 @@ import warnings
 from datetime import date
 from datetime import datetime
 import os
+import json
+
 from timeis import timeis, yellow, red, blue, white, green, line, tic, toc
 from delete_unused_files import del_unused_files
 
@@ -66,14 +68,16 @@ def generate_compound_families_html():
 
 	test1 = dpd_df["Family2"] != ""
 	test2 = dpd_df["Meaning IN CONTEXT"] != ""
-	filter = test1 & test2
+	test3 = dpd_df['Pāli3'].str.len() < 30 # remove all the long words
+	filter = test1 & test2 & test3
 	df_reduced = dpd_df[filter]
 
 	compound_family_count = compound_family_df.shape[0]
 
 	anki_html = ""
+	compound_family_dict = {}
 
-	for row in range (compound_family_count):
+	for row in range(compound_family_count):  # compound_family_count
 		compound_family =  compound_family_df.iloc[row,0]
 		compound_family_no_number = re.sub(r"\d", "", compound_family)
 		
@@ -93,7 +97,7 @@ def generate_compound_families_html():
 			html = ""
 			# html += f"<style>{css}</style>"
 			length = df_filtered.shape[0]
-			html += f"""<table class = "table1"><tbody>"""
+			html += f"""<table class="table1"><tbody>"""
 			anki_html += f"<b>{compound_family}</b>\t"
 			anki_html += f"<table><tbody>"
 
@@ -104,9 +108,12 @@ def generate_compound_families_html():
 				cf_constr = df_filtered.iloc[row, 3]
 				cf_constr = re.sub (r"<br/>.+", "", cf_constr)
 			
-				html += f"<tr><th class='cfpali'>{cf_pali}</th>"
-				html += f"<td class='cfpos'>{cf_pos}</td>"
-				html += f"<td class='cfeng'>{cf_english}</td></tr>"
+				# html += f"<tr><th class='cfpali'>{cf_pali}</th>"
+				html += f"<tr><th>{cf_pali}</th>"
+				# html += f"<td class='cfpos'>{cf_pos}</td>"
+				html += f"<td>{cf_pos}</td>"
+				# html += f"<td class='cfeng'>{cf_english}</td></tr>"
+				html += f"<td>{cf_english}</td></tr>"
 				
 				anki_html += f"<tr valign='top'><div style='color: #FFB380'><td>{cf_pali}</td><td><div style='color: #FF6600'>{cf_pos}</div></td><td><div style='color: #FFB380'>{cf_english}</td><td><div style='color: #FF6600'>{cf_constr}</div></td></tr>"
 
@@ -116,10 +123,18 @@ def generate_compound_families_html():
 
 			with open (f"output/{compound_family}.html", 'w', encoding= "'utf-8") as html_file:
 				html_file.write(html)
-		
+			
+			# for external apps
+			html_for_json = re.sub("table1", "compound-family", html)
+			compound_family_dict[compound_family] = html_for_json
+
 	with open("../csvs for anki/compound families.csv", "w") as anki_file:
 		anki_file.write(anki_html)
 	
+	compound_families_json = json.dumps(compound_family_dict, ensure_ascii=False, indent=4)
+	with open ("../dpd-app/data/compound-families.json", "w") as f:
+		f.write(compound_families_json)
+
 
 def delete_unused_family_files():
 
