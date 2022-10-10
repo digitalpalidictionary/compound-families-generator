@@ -108,11 +108,8 @@ def generate_compound_families_html():
 				cf_constr = df_filtered.iloc[row, 3]
 				cf_constr = re.sub (r"<br/>.+", "", cf_constr)
 			
-				# html += f"<tr><th class='cfpali'>{cf_pali}</th>"
 				html += f"<tr><th>{cf_pali}</th>"
-				# html += f"<td class='cfpos'>{cf_pos}</td>"
 				html += f"<td>{cf_pos}</td>"
-				# html += f"<td class='cfeng'>{cf_english}</td></tr>"
 				html += f"<td>{cf_english}</td></tr>"
 				
 				anki_html += f"<tr valign='top'><div style='color: #FFB380'><td>{cf_pali}</td><td><div style='color: #FF6600'>{cf_pos}</div></td><td><div style='color: #FFB380'>{cf_english}</td><td><div style='color: #FF6600'>{cf_constr}</div></td></tr>"
