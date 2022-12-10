@@ -83,8 +83,9 @@ def generate_compound_families_html():
 		
 		test1 = df_reduced["Family2"].str.contains(rf"(^|\s){compound_family}(\s|$)")
 		test2 = df_reduced["Pāli3"] != compound_family_no_number
+		test3 = df_reduced["Pāli Root"] == ""
 		# test3 = df_reduced["Source1"] != "" # removes words with no sutta examples
-		filter = test1 & test2
+		filter = test1 & test2 & test3
 		df_filtered = df_reduced.loc[filter, ["Pāli1", "POS", "Meaning IN CONTEXT", "Construction"]]
 
 		if row % 500 == 0:
