@@ -26,6 +26,7 @@ def setup_dpd_df():
 	global dpd_df
 	dpd_df = pd.read_csv ("../csvs/dpd-full.csv", sep="\t", dtype=str)
 	dpd_df = dpd_df.fillna("") 
+	return dpd_df
 
 def extract_compound_family_names():
 	print(f"{timeis()} {green}extracting compound family names")
@@ -57,14 +58,14 @@ def extract_compound_family_names():
 	compound_family_df.drop_duplicates(keep="first", inplace=True)
 	compound_family_df.sort_values([0], ascending=True, inplace=True)
 	compound_family_df.reset_index(drop=True, inplace=True)
-	global master_family_list
 	master_family_list = compound_family_df[0].tolist()
-
+	
+	return master_family_list
 
 def generate_compound_families_html():
 	print(f"{timeis()} {green}generating compound family html")
 
-	dpd_df['Pāli3'] = dpd_df['Pāli1'].str.replace(" \d*", "")
+	dpd_df['Pāli3'] = dpd_df['Pāli1'].str.replace(" \\d*", "")
 
 	test1 = dpd_df["Family2"] != ""
 	test2 = dpd_df["Meaning IN CONTEXT"] != ""
@@ -76,6 +77,7 @@ def generate_compound_families_html():
 
 	anki_html = ""
 	compound_family_dict = {}
+	errors = []
 
 	for row in range(compound_family_count):  # compound_family_count
 		compound_family =  compound_family_df.iloc[row,0]
@@ -84,9 +86,8 @@ def generate_compound_families_html():
 		test1 = df_reduced["Family2"].str.contains(rf"(^|\s){compound_family}(\s|$)")
 		test2 = df_reduced["Pāli3"] != compound_family_no_number
 		test3 = df_reduced["Pāli Root"] == ""
-		# test3 = df_reduced["Source1"] != "" # removes words with no sutta examples
 		filter = test1 & test2 & test3
-		df_filtered = df_reduced.loc[filter, ["Pāli1", "POS", "Meaning IN CONTEXT", "Construction"]]
+		df_filtered = df_reduced.loc[filter, ["Pāli1", "POS", "Grammar", "Meaning IN CONTEXT", "Construction", "Word Family"]]
 
 		if row % 500 == 0:
 			print(f"{timeis()} {row}/{compound_family_count}\t{compound_family}")
@@ -96,6 +97,7 @@ def generate_compound_families_html():
 
 		if df_filtered.shape[0] > 0:
 			html = ""
+			count = 0
 			# html += f"<style>{css}</style>"
 			length = df_filtered.shape[0]
 			html += f"""<table class="table1"><tbody>"""
@@ -105,15 +107,24 @@ def generate_compound_families_html():
 			for row in range(length):
 				cf_pali = df_filtered.iloc[row, 0]
 				cf_pos = df_filtered.iloc[row, 1]
-				cf_english = df_filtered.iloc[row, 2]
-				cf_constr = df_filtered.iloc[row, 3]
+				cf_grammar = df_filtered.iloc[row, 2]
+				cf_english = df_filtered.iloc[row, 3]
+				cf_constr = df_filtered.iloc[row, 4]
 				cf_constr = re.sub (r"<br/>.+", "", cf_constr)
-			
-				html += f"<tr><th>{cf_pali}</th>"
-				html += f"<td>{cf_pos}</td>"
-				html += f"<td>{cf_english}</td></tr>"
+				cf_word_family = df_filtered.iloc[row, 5]
+
+				if re.findall("\\bcomp\\b", cf_grammar) or re.findall("idiom|sandhi", cf_pos):
+
+					html += f"<tr><th>{cf_pali}</th>"
+					html += f"<td><b>{cf_pos}</b></td>"
+					html += f"<td>{cf_english}</td></tr>"
+
+					anki_html += f"<tr valign='top'><div style='color: #FFB380'><td>{cf_pali}</td><td><div style='color: #FF6600'>{cf_pos}</div></td><td><div style='color: #FFB380'>{cf_english}</td><td><div style='color: #FF6600'>{cf_constr}</div></td></tr>"
+
+					count += 1
 				
-				anki_html += f"<tr valign='top'><div style='color: #FFB380'><td>{cf_pali}</td><td><div style='color: #FF6600'>{cf_pos}</div></td><td><div style='color: #FFB380'>{cf_english}</td><td><div style='color: #FF6600'>{cf_constr}</div></td></tr>"
+			if count == 0:
+				errors += [compound_family] 
 
 			html += f"</tbody></table>"
 			anki_html += f"</tbody></table>"
@@ -133,6 +144,15 @@ def generate_compound_families_html():
 	with open ("../dpd-app/data/compound-families.json", "w") as f:
 		f.write(compound_families_json)
 
+	print(f"{timeis()} {green}errors {red}{len(errors)}", end= " ")
+	for error in errors:
+		print(f"{error} ", end=" ")
+	print()
+
+	with open("compound family errors.tsv", "w") as f:
+		for error in errors:
+			f.write(f"{error}\n")
+
 
 def delete_unused_family_files():
 
@@ -142,8 +162,8 @@ def delete_unused_family_files():
 
 
 tic()
-setup_dpd_df()
-extract_compound_family_names()
+dpd_df = setup_dpd_df()
+master_family_list = extract_compound_family_names()
 generate_compound_families_html()
 delete_unused_family_files()
 toc()
