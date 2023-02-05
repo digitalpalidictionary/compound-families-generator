@@ -4,13 +4,14 @@
 import re
 import pandas as pd
 import warnings
-from datetime import date
-from datetime import datetime
 import os
 import json
 
+from datetime import date
+from datetime import datetime
 from timeis import timeis, yellow, red, blue, white, green, line, tic, toc
 from delete_unused_files import del_unused_files
+from superscripter import superscripter
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.simplefilter(action='ignore', category=UserWarning)
@@ -106,6 +107,7 @@ def generate_compound_families_html():
 
 			for row in range(length):
 				cf_pali = df_filtered.iloc[row, 0]
+				cf_pali = superscripter(cf_pali)
 				cf_pos = df_filtered.iloc[row, 1]
 				cf_grammar = df_filtered.iloc[row, 2]
 				cf_english = df_filtered.iloc[row, 3]
@@ -155,7 +157,6 @@ def generate_compound_families_html():
 
 
 def delete_unused_family_files():
-
 	file_dir = "output/"
 	file_ext = ".html"
 	del_unused_files(master_family_list, file_dir, file_ext)
